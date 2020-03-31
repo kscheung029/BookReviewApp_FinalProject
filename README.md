@@ -1,6 +1,6 @@
 # BookReview Web App Development Tool
 
-This project will be build with React Front-End Development and ASP.NETCORE Back-End Development.
+This project will be build with React Front-End Development and ASP.NET Back-End Development.
 
 ### Front-End
 Login/Register page : Need to Login first before you can leave a review<br>
