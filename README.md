@@ -13,4 +13,5 @@ ASP.NETCORE Using IdentifyUser's Table: stock user account and reviews
 
 ### Google Books API
 We will be using Google's Book APIs in this project.<br>
+https://developers.google.com/books<br>
 The new Google Books API lets you perform programmatically most of the operations that you can do interactively on the Google Books website.
