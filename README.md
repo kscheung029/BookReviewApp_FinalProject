@@ -17,4 +17,4 @@ We will be using Google's Book APIs in this project.<br>
 https://developers.google.com/books<br>
 Using the Google Books API, the application can perform full-text searches and retrieve book information, viewability and eBook availability.
 
-### Developer Team: Winson,Kimo,Tai and Ivar.
+### Developer Team: Winson, Kimo, Tai and Ivar.
