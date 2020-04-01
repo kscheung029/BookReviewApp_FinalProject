@@ -39,7 +39,7 @@ namespace BookReviewApp.Controllers
                 }
                 else
                 {
-                    return BadRequest(new { status = 400, detail = "This email adress has been registered." });
+                    return BadRequest(new { status = 400, detail = "This email address has been registered." });
                 }
             }
             return BadRequest(new { status = 400, detail = "Input data is not valid." });

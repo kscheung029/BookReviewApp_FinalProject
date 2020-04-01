@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookReviewApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200401031537_InitialCreate")]
+    [Migration("20200401042654_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace BookReviewApp.Data.Migrations
 
                     b.Property<string>("UserId");
 
-                    b.Property<bool>("IsFavourite");
+                    b.Property<bool>("IsFavorite");
 
                     b.Property<string>("Review");
 

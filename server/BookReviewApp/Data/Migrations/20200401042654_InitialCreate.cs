@@ -23,7 +23,7 @@ namespace BookReviewApp.Data.Migrations
                     UserId = table.Column<string>(nullable: false),
                     Review = table.Column<string>(nullable: true),
                     ReviewedOn = table.Column<DateTime>(nullable: false),
-                    IsFavourite = table.Column<bool>(nullable: false)
+                    IsFavorite = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

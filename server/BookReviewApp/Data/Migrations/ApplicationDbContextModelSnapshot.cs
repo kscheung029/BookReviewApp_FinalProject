@@ -72,7 +72,7 @@ namespace BookReviewApp.Data.Migrations
 
                     b.Property<string>("UserId");
 
-                    b.Property<bool>("IsFavourite");
+                    b.Property<bool>("IsFavorite");
 
                     b.Property<string>("Review");
 
