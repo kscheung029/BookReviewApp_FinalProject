@@ -7,23 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BookReviewApp.Data;
 using BookReviewApp.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace BookReviewApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class FavoriteController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly string _userId;
 
-        public FavoriteController(ApplicationDbContext context)
+        public FavoriteController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
 
-            var bearer = HttpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            var bearer = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
             var handler = new JwtSecurityTokenHandler();
             var token = handler.ReadJwtToken(bearer.ToString().Replace("Bearer ", ""));
-            _userId = int.Parse(token.Id);
+            _userId = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
         }
 
         // GET: api/Favorite

@@ -7,18 +7,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BookReviewApp.Data;
 using BookReviewApp.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace BookReviewApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ReviewController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly string _userId;
 
-        public ReviewController(ApplicationDbContext context)
+        public FavoriteController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+
+            var bearer = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(bearer.ToString().Replace("Bearer ", ""));
+            _userId = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
         }
 
         // GET: api/Review
