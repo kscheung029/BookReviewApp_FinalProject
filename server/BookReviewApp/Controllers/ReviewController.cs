@@ -9,6 +9,8 @@ using BookReviewApp.Data;
 using BookReviewApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BookReviewApp.Controllers
 {
@@ -20,7 +22,7 @@ namespace BookReviewApp.Controllers
         private readonly ApplicationDbContext _context;
         private readonly string _userId;
 
-        public FavoriteController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+        public ReviewController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
 
@@ -30,79 +32,53 @@ namespace BookReviewApp.Controllers
             _userId = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
         }
 
+        public class ReviewBook
+        {
+            public string Title { get; set; }
+            public string Review { get; set; }
+        }
+
         // GET: api/Review
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserBook>>> GetUserBooks()
+        public IEnumerable<UserBook> GetReview()
         {
-            return await _context.UserBooks.ToListAsync();
+            List<UserBook> reviewBooks = _context.UserBooks.Where(book => book.UserId == _userId && book.Review != null).ToList();
+            return reviewBooks;
         }
 
-        // GET: api/Review/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserBook>> GetUserBook(string id)
+        // PUT: api/Review
+        [HttpPut]
+        public ReviewBook PutReview(ReviewBook reviewBook)
         {
-            var userBook = await _context.UserBooks.FindAsync(id);
+            var entity = _context.UserBooks.SingleOrDefault(item => item.Title == reviewBook.Title);
 
-            if (userBook == null)
+            if (entity == null)
             {
-                return NotFound();
+                UserBook newBook = new UserBook
+                {
+                    Title = reviewBook.Title,
+                    Review = reviewBook.Review,
+                    ReviewedOn = DateTime.Now,
+                    UserId = _userId
+                };
+                _context.UserBooks.Add(newBook);
             }
-
-            return userBook;
-        }
-
-        // PUT: api/Review/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserBook(string id, UserBook userBook)
-        {
-            if (id != userBook.Id)
+            else
             {
-                return BadRequest();
+                entity.Review = reviewBook.Review;
+                entity.ReviewedOn = DateTime.Now;
             }
-
-            _context.Entry(userBook).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserBookExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Review
-        [HttpPost]
-        public async Task<ActionResult<UserBook>> PostUserBook(UserBook userBook)
-        {
-            _context.UserBooks.Add(userBook);
-            try
-            {
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (UserBookExists(userBook.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return CreatedAtAction("GetUserBook", new { id = userBook.Id }, userBook);
+            return reviewBook;
         }
 
         // DELETE: api/Review/5
@@ -119,11 +95,6 @@ namespace BookReviewApp.Controllers
             await _context.SaveChangesAsync();
 
             return userBook;
-        }
-
-        private bool UserBookExists(string id)
-        {
-            return _context.UserBooks.Any(e => e.Id == id);
         }
     }
 }

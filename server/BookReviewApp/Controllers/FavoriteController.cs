@@ -32,79 +32,50 @@ namespace BookReviewApp.Controllers
             _userId = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
         }
 
+        public class FavoriteBook
+        {
+            public string Title { get; set; }
+            public bool IsFavorite { get; set; }
+        }
+
         // GET: api/Favorite
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserBook>>> GetUserBooks()
+        public IEnumerable<UserBook> GetFavorite()
         {
-            return await _context.UserBooks.ToListAsync();
+            List<UserBook> favoriteBooks = _context.UserBooks.Where(book => book.UserId == _userId && book.IsFavorite).ToList();
+            return favoriteBooks;
         }
 
-        // GET: api/Favorite/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserBook>> GetUserBook(string id)
+        // PUT: api/Favorite
+        [HttpPut]
+        public FavoriteBook PutFavorite(FavoriteBook favoriteBook)
         {
-            var userBook = await _context.UserBooks.FindAsync(id);
+            var entity = _context.UserBooks.SingleOrDefault(item => item.Title == favoriteBook.Title);
 
-            if (userBook == null)
+            if (entity == null)
             {
-                return NotFound();
-            }
-
-            return userBook;
-        }
-
-        // PUT: api/Favorite/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserBook(string id, UserBook userBook)
-        {
-            if (id != userBook.Id)
+                UserBook newBook = new UserBook
+                {
+                    Title = favoriteBook.Title,
+                    IsFavorite = favoriteBook.IsFavorite,
+                    UserId = _userId
+                };
+                _context.UserBooks.Add(newBook);
+            } else
             {
-                return BadRequest();
+                entity.IsFavorite = favoriteBook.IsFavorite;
             }
-
-            _context.Entry(userBook).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserBookExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Favorite
-        [HttpPost]
-        public async Task<ActionResult<UserBook>> PostUserBook(UserBook userBook)
-        {
-            _context.UserBooks.Add(userBook);
-            try
-            {
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (UserBookExists(userBook.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
 
-            return CreatedAtAction("GetUserBook", new { id = userBook.Id }, userBook);
+            return favoriteBook;
         }
 
         // DELETE: api/Favorite/5
@@ -121,11 +92,6 @@ namespace BookReviewApp.Controllers
             await _context.SaveChangesAsync();
 
             return userBook;
-        }
-
-        private bool UserBookExists(string id)
-        {
-            return _context.UserBooks.Any(e => e.Id == id);
         }
     }
 }

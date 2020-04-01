@@ -68,7 +68,8 @@ namespace BookReviewApp.Data.Migrations
 
             modelBuilder.Entity("BookReviewApp.Models.UserBook", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("UserId");
 
@@ -78,7 +79,12 @@ namespace BookReviewApp.Data.Migrations
 
                     b.Property<DateTime>("ReviewedOn");
 
+                    b.Property<string>("Title")
+                        .IsRequired();
+
                     b.HasKey("Id", "UserId");
+
+                    b.HasAlternateKey("Id");
 
                     b.HasIndex("UserId");
 

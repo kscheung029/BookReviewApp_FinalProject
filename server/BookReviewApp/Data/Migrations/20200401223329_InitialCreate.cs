@@ -21,6 +21,7 @@ namespace BookReviewApp.Data.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     UserId = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
                     Review = table.Column<string>(nullable: true),
                     ReviewedOn = table.Column<DateTime>(nullable: false),
                     IsFavorite = table.Column<bool>(nullable: false)
@@ -28,6 +29,7 @@ namespace BookReviewApp.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserBooks", x => new { x.Id, x.UserId });
+                    table.UniqueConstraint("AK_UserBooks_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserBooks_AspNetUsers_UserId",
                         column: x => x.UserId,
