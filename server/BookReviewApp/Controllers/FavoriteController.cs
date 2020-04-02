@@ -34,7 +34,7 @@ namespace BookReviewApp.Controllers
 
         public class FavoriteBook
         {
-            public string Title { get; set; }
+            public string Id { get; set; }
             public bool IsFavorite { get; set; }
         }
 
@@ -50,13 +50,13 @@ namespace BookReviewApp.Controllers
         [HttpPut]
         public FavoriteBook PutFavorite(FavoriteBook favoriteBook)
         {
-            var entity = _context.UserBooks.SingleOrDefault(item => item.Title == favoriteBook.Title);
+            var entity = _context.UserBooks.SingleOrDefault(item => item.Id == favoriteBook.Id);
 
             if (entity == null)
             {
                 UserBook newBook = new UserBook
                 {
-                    Title = favoriteBook.Title,
+                    Id = favoriteBook.Id,
                     IsFavorite = favoriteBook.IsFavorite,
                     UserId = _userId
                 };
@@ -68,7 +68,7 @@ namespace BookReviewApp.Controllers
 
             try
             {
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -80,15 +80,22 @@ namespace BookReviewApp.Controllers
 
         // DELETE: api/Favorite/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UserBook>> DeleteUserBook(string id)
+        public async Task<ActionResult<UserBook>> DeleteFavorite(string id)
         {
-            var userBook = await _context.UserBooks.FindAsync(id);
+            var userBook = _context.UserBooks.SingleOrDefault(b => b.Id == id);
             if (userBook == null)
             {
                 return NotFound();
             }
 
-            _context.UserBooks.Remove(userBook);
+            if (userBook.Review == null || userBook.Review == "")
+            {
+                _context.UserBooks.Remove(userBook);
+            } else
+            {
+                userBook.IsFavorite = false;
+            }
+
             await _context.SaveChangesAsync();
 
             return userBook;

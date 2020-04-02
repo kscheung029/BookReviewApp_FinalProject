@@ -7,10 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.cs" />
+    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.Designer.cs" />
     <Compile Remove="Data\Migrations\20200401031537_InitialCreate.cs" />
     <Compile Remove="Data\Migrations\20200401031537_InitialCreate.Designer.cs" />
     <Compile Remove="Data\Migrations\20200401042654_InitialCreate.cs" />
     <Compile Remove="Data\Migrations\20200401042654_InitialCreate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200401223329_InitialCreate.cs" />
+    <Compile Remove="Data\Migrations\20200401223329_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200402033048_InitialCreate.cs" />
+    <Compile Remove="Migrations\20200402033048_InitialCreate.Designer.cs" />
   </ItemGroup>
 
 
@@ -26,6 +32,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
 </Project>

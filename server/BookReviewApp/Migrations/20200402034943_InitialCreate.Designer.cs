@@ -3,14 +3,16 @@ using System;
 using BookReviewApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BookReviewApp.Data.Migrations
+namespace BookReviewApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200402034943_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,8 +70,7 @@ namespace BookReviewApp.Data.Migrations
 
             modelBuilder.Entity("BookReviewApp.Models.UserBook", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<string>("Id");
 
                     b.Property<string>("UserId");
 
@@ -79,12 +80,7 @@ namespace BookReviewApp.Data.Migrations
 
                     b.Property<DateTime>("ReviewedOn");
 
-                    b.Property<string>("Title")
-                        .IsRequired();
-
                     b.HasKey("Id", "UserId");
-
-                    b.HasAlternateKey("Id");
 
                     b.HasIndex("UserId");
 

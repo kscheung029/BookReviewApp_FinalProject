@@ -42,24 +42,24 @@ namespace BookReviewApp.Controllers
         [HttpPost]
         public async Task<IActionResult> OnPostAsync([FromBody]LoginModel.InputModel input)
         {
-            if (ModelState.IsValid)
+            var result = await _signInManager.PasswordSignInAsync(input.Email.ToLower(), input.Password, input.RememberMe, lockoutOnFailure: true);
+
+            if (result.Succeeded)
             {
-                var result = await _signInManager.PasswordSignInAsync(input.Email.ToLower(), input.Password, input.RememberMe, lockoutOnFailure: true);
-                if (result.Succeeded)
+                var UserManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var user = await UserManager.FindByEmailAsync(input.Email);
+
+                if (user != null)
                 {
-                    var UserManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var user = await UserManager.FindByEmailAsync(input.Email);
-                    if (user != null)
-                    {
-                        var tokenString = GenerateJSONWebToken(user);
-                        return Ok(new { token = tokenString, status = 200, detail = "Logged in successfully." });
-                    }
-                }
-                else if (result.IsLockedOut)
-                {
-                    return BadRequest(new { status = 400, detail = "Account has been locked out due to too many attempts." });
+                    var tokenString = GenerateJSONWebToken(user);
+                    return Ok(new { token = tokenString, status = 200, detail = "Logged in successfully." });
                 }
             }
+            else if (result.IsLockedOut)
+            {
+                return BadRequest(new { status = 400, detail = "Account has been locked out due to too many attempts." });
+            }
+
             return Unauthorized(new { status = 401, detail = "Invalid login information." });
         }
 
@@ -79,6 +79,7 @@ namespace BookReviewApp.Controllers
                 claims,
                 expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: credentials);
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

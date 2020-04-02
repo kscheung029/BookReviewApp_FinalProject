@@ -34,7 +34,7 @@ namespace BookReviewApp.Controllers
 
         public class ReviewBook
         {
-            public string Title { get; set; }
+            public string Id { get; set; }
             public string Review { get; set; }
         }
 
@@ -50,13 +50,13 @@ namespace BookReviewApp.Controllers
         [HttpPut]
         public ReviewBook PutReview(ReviewBook reviewBook)
         {
-            var entity = _context.UserBooks.SingleOrDefault(item => item.Title == reviewBook.Title);
+            var entity = _context.UserBooks.SingleOrDefault(item => item.Id == reviewBook.Id);
 
             if (entity == null)
             {
                 UserBook newBook = new UserBook
                 {
-                    Title = reviewBook.Title,
+                    Id = reviewBook.Id,
                     Review = reviewBook.Review,
                     ReviewedOn = DateTime.Now,
                     UserId = _userId
@@ -71,7 +71,7 @@ namespace BookReviewApp.Controllers
 
             try
             {
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             catch (DbUpdateException)
             {
@@ -83,15 +83,23 @@ namespace BookReviewApp.Controllers
 
         // DELETE: api/Review/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UserBook>> DeleteUserBook(string id)
+        public async Task<ActionResult<UserBook>> DeleteReview(string id)
         {
-            var userBook = await _context.UserBooks.FindAsync(id);
+            var userBook = _context.UserBooks.SingleOrDefault(b => b.Id == id);
             if (userBook == null)
             {
                 return NotFound();
             }
 
-            _context.UserBooks.Remove(userBook);
+            if (userBook.IsFavorite == false)
+            {
+                _context.UserBooks.Remove(userBook);
+            }
+            else
+            {
+                userBook.Review = null;
+            }
+
             await _context.SaveChangesAsync();
 
             return userBook;
