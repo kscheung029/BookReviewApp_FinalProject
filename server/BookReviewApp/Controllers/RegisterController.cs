@@ -31,19 +31,19 @@ namespace BookReviewApp.Controllers
         {
             var user = new ApplicationUser { UserName = input.Email.ToLower(), Email = input.Email };
             var result = await _userManager.CreateAsync(user, input.Password);
-            var errors = new List<string>();
+            var errorList = new List<string>();
 
             if (result.Succeeded)
             {
-                return Ok(new { status = 200, detail = "Registered successfully." });
+                return Ok(new { status = 200, title = "Registered successfully." });
             }
 
             foreach(IdentityError error in result.Errors)
             {
-                errors.Add(error.Description);
+                errorList.Add(error.Description);
             }
 
-            return BadRequest(new { status = 400, detail = errors });
+            return BadRequest(new { status = 400, errors = errorList });
         }
     }
 }
