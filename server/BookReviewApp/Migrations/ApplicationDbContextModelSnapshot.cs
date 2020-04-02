@@ -3,16 +3,14 @@ using System;
 using BookReviewApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BookReviewApp.Data.Migrations
+namespace BookReviewApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200401031537_InitialCreate")]
-    partial class InitialCreate
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +72,7 @@ namespace BookReviewApp.Data.Migrations
 
                     b.Property<string>("UserId");
 
-                    b.Property<bool>("IsFavourite");
+                    b.Property<bool>("IsFavorite");
 
                     b.Property<string>("Review");
 
