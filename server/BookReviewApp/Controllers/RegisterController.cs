@@ -29,20 +29,21 @@ namespace BookReviewApp.Controllers
         [HttpPost]
         public async Task<IActionResult> OnPostAsync([FromBody]RegisterModel.InputModel input)
         {
-            if (ModelState.IsValid)
+            var user = new ApplicationUser { UserName = input.Email.ToLower(), Email = input.Email };
+            var result = await _userManager.CreateAsync(user, input.Password);
+            var errors = new List<string>();
+
+            if (result.Succeeded)
             {
-                var user = new ApplicationUser { UserName = input.Email.ToLower(), Email = input.Email };
-                var result = await _userManager.CreateAsync(user, input.Password);
-                if (result.Succeeded)
-                {
-                    return Ok(new { status = 200, detail = "Registered successfully." });
-                }
-                else
-                {
-                    return BadRequest(new { status = 400, detail = "This email adress has been registered." });
-                }
+                return Ok(new { status = 200, detail = "Registered successfully." });
             }
-            return BadRequest(new { status = 400, detail = "Input data is not valid." });
+
+            foreach(IdentityError error in result.Errors)
+            {
+                errors.Add(error.Description);
+            }
+
+            return BadRequest(new { status = 400, detail = errors });
         }
     }
 }
