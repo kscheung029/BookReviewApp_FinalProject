@@ -50,7 +50,7 @@ namespace BookReviewApp.Controllers
         [HttpPut]
         public FavoriteBook PutFavorite(FavoriteBook favoriteBook)
         {
-            var entity = _context.UserBooks.SingleOrDefault(item => item.Id == favoriteBook.Id);
+            var entity = _context.UserBooks.SingleOrDefault(item => item.Id == favoriteBook.Id && item.UserId == _userId);
 
             if (entity == null)
             {
