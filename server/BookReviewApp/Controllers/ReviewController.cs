@@ -50,7 +50,7 @@ namespace BookReviewApp.Controllers
         [HttpPut]
         public ReviewBook PutReview(ReviewBook reviewBook)
         {
-            var entity = _context.UserBooks.SingleOrDefault(item => item.Id == reviewBook.Id);
+            var entity = _context.UserBooks.SingleOrDefault(item => item.Id == reviewBook.Id && item.UserId == _userId);
 
             if (entity == null)
             {
