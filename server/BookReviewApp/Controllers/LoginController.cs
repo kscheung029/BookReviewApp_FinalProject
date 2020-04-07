@@ -42,7 +42,7 @@ namespace BookReviewApp.Controllers
         [HttpPost]
         public async Task<IActionResult> OnPostAsync([FromBody]LoginModel.InputModel input)
         {
-            var result = await _signInManager.PasswordSignInAsync(input.Email.ToLower(), input.Password, input.RememberMe, lockoutOnFailure: true);
+            var result = await _signInManager.PasswordSignInAsync(input.Email.ToLower(), input.Password, isPersistent: false, lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
@@ -52,15 +52,16 @@ namespace BookReviewApp.Controllers
                 if (user != null)
                 {
                     var tokenString = GenerateJSONWebToken(user);
-                    return Ok(new { token = tokenString, status = 200, detail = "Logged in successfully." });
+                    return Ok(new { token = tokenString, status = 200, title = "Logged in successfully." });
                 }
             }
-            else if (result.IsLockedOut)
+
+            if (result.IsLockedOut)
             {
-                return BadRequest(new { status = 400, detail = "Account has been locked out due to too many attempts." });
+                return BadRequest(new { status = 400, errors = "Account has been locked out due to too many attempts." });
             }
 
-            return Unauthorized(new { status = 401, detail = "Invalid login information." });
+            return Unauthorized(new { status = 401, errors = "Invalid login information." });
         }
 
         private string GenerateJSONWebToken(ApplicationUser user)
