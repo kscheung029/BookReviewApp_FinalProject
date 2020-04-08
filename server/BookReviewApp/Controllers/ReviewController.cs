@@ -40,9 +40,18 @@ namespace BookReviewApp.Controllers
 
         // GET: api/Review
         [HttpGet]
-        public IEnumerable<UserBook> GetReview()
+        [Route("{id}")]
+        public IEnumerable<UserBook> GetReview(string id)
         {
-            List<UserBook> reviewBooks = _context.UserBooks.Where(book => book.UserId == _userId && book.Review != null).ToList();
+            List<UserBook> reviewBooks = _context.UserBooks.Where(book => book.Id == id && book.Review != null).Select(b => new UserBook()
+            {
+                Id = b.Id,
+                Review = b.Review,
+                ReviewedOn = b.ReviewedOn,
+                IsFavorite = b.IsFavorite,
+                UserId = b.ApplicationUser.Email
+            }).ToList();
+
             return reviewBooks;
         }
 
