@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardTitle, CardImg, CardBody, Button, Modal } from 'reactstrap';
+import { Link } from "react-router-dom";
 
 const Books = ({
   thumbnail,
@@ -70,7 +71,7 @@ const Books = ({
           </div>
           <div className='divider'></div>
           <div className='right-silde'>
-            <a
+            {/* <a
               href={infoLink}
               className='btn-link'
               color='default'
@@ -79,7 +80,8 @@ const Books = ({
               rel='noopener noreferrer'
             >
               Go to Review
-            </a>
+            </a> */}
+            <Link to={{pathname: `/review/${infoLink}`}}>Go to Review</Link>
           </div>
         </div>
       </Modal>
