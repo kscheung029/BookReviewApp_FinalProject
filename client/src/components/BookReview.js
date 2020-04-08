@@ -8,8 +8,10 @@ class BookReview extends Component {
     super(props);
 
     this.state = {
+      id: "" ,
       reviews: [],
-      loading: false
+      loading: false,
+      token: sessionStorage.getItem('auth_user')
     };
 
     this.addReview = this.addReview.bind(this);
@@ -18,15 +20,23 @@ class BookReview extends Component {
   componentDidMount() {
     // loading
     this.setState({ loading: true });
-
+    this.setState({ id: this.props.match.params.id })
     // get all the reviews
-    fetch("http://localhost:7777")
+    fetch("https://bookreviewapi.azurewebsites.net/api/review", {
+      method: "GET",  
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        Authorization : `Bearer ${this.state.token}`
+      }
+    })
       .then(res => res.json())
       .then(res => {
         this.setState({
           reviews: res,
           loading: false
         });
+        console.log(this.state)
       })
       .catch(err => {
         this.setState({ loading: false });
@@ -40,7 +50,7 @@ class BookReview extends Component {
   addReview(review) {
     this.setState({
       loading: false,
-      reviews: [review, ...this.state.reviews]
+      reviews: [review, ...this.state.reviews],
     });
   }
 
@@ -61,7 +71,7 @@ class BookReview extends Component {
         <div className="row">
           <div className="col-4  pt-3 border-right">
             <h6>Say something about the Book!</h6>
-            <ReviewForm addReview={this.addReview} />
+            <ReviewForm id={this.state.id} addReview={this.addReview} />
           </div>
           <div className="col-8  pt-3 bg-white">
             <ReviewList

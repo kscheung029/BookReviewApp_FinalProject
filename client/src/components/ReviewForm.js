@@ -6,40 +6,51 @@ export default class ReviewForm extends Component {
     this.state = {
       loading: false,
       error: "",
+      token: sessionStorage.getItem("auth_user"),
 
       review: {
-        name: "",
+        //name: "",
+        id: this.props.id,
         message: ""
       }
     };
 
     // bind context to methods
-    this.handleFieldChange = this.handleFieldChange.bind(this);
+    //this.handleFieldChange = this.handleFieldChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
   /**
    * Handle form input field changes & update the state
    */
-  handleFieldChange = event => {
-    const { value, name } = event.target;
+  // handleFieldChange = event => {
+  //   const { value, name } = event.target;
 
-    this.setState({
-      ...this.state,
-      review: {
-        ...this.state.review,
-        [name]: value
-      }
-    });
-  };
+  //   this.setState({
+  //     ...this.state,
+  //     review: {
+  //       ...this.state.review,
+  //       [name]: value
+  //     },
+  //   });
+  // };
 
   /**
    * Form submit handler
    */
   onSubmit(e) {
     e.preventDefault();
+    if (!sessionStorage.getItem("auth_user")){
+      alert("Please log in first.")
+      return;
+    }
+    // if (!this.isFormValid()) {
+    //   this.setState({ error: "All fields are required." });
+    //   return;
+    // }
+    let input = e.target.message.value
 
-    if (!this.isFormValid()) {
+    if (input === "") {
       this.setState({ error: "All fields are required." });
       return;
     }
@@ -49,9 +60,14 @@ export default class ReviewForm extends Component {
 
     // persist the reviews on server
     let { review } = this.state;
-    fetch("https://BookReviewAPI.azurewebsites.net", {
-      method: "post",
-      body: JSON.stringify(review)
+    fetch("https://BookReviewAPI.azurewebsites.net/api/review", {
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.state.token}`
+      },
+      body: JSON.stringify({"Id": this.props.id, "Review": input})
     })
       .then(res => res.json())
       .then(res => {
@@ -61,7 +77,6 @@ export default class ReviewForm extends Component {
           // add time return and push review to parent state
           review.time = res.time;
           this.props.addReview(review);
-
           // clear the message box
           this.setState({
             loading: false,
@@ -94,7 +109,7 @@ export default class ReviewForm extends Component {
     return (
       <React.Fragment>
         <form method="post" onSubmit={this.onSubmit}>
-          <div className="form-group">
+          {/* <div className="form-group">
             <input
               onChange={this.handleFieldChange}
               value={this.state.review.name}
@@ -103,12 +118,12 @@ export default class ReviewForm extends Component {
               name="name"
               type="text"
             />
-          </div>
+          </div> */}
 
           <div className="form-group">
             <textarea
-              onChange={this.handleFieldChange}
-              value={this.state.review.message}
+              //onChange={this.handleFieldChange}
+              //value={this.state.review.review}
               className="form-control"
               placeholder="Your Review 🤬 "
               name="message"

@@ -1,35 +1,11 @@
 import React, { useState } from 'react';
 import BookCard from './Books.js';
-import {InputGroup, Input, InputGroupAddon, Button, FormGroup, Label, Spinner} from 'reactstrap';
+import {InputGroup, Input, Button, FormGroup, Label, Spinner} from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import axios from 'axios';
 
-function Home() {
-
-  //Navbar
-  function Navbar() {
-    return (
-  <nav className="navbar navbar-expand-lg navbar-light bg-dark">
-    <img src="book-reader-solid.svg" alt=""/>
-    <a className="navbar-brand ml-4 text-white"><h3 >Need Review A Book?</h3></a>
-    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav ml-auto">
-        <li className="nav-item active">
-          <a className="nav-link text-white text-uppercase ml-3" href="/#">Home&nbsp;<i class="fas fa-home ml-1"></i><span class="sr-only">(current)</span></a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link text-white text-uppercase ml-4 mr-4" href="/#">Login/Register</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
-    );
-  }
-
+const Home = () => {
   //header
   const Header = () => {
     return (
@@ -131,7 +107,7 @@ function Home() {
               publisher={item.volumeInfo.publisher}
               description={item.volumeInfo.description}
               previewLink={item.volumeInfo.previewLink}
-              infoLink={item.volumeInfo.infoLink}
+              infoLink={item.id}
             />
           </div>
         );
@@ -147,7 +123,6 @@ function Home() {
 
   return (
     <div className='w-100 h-100'>
-      {Navbar()}
       {Header()}
       {handleCards()}
       <ToastContainer />
