@@ -81,7 +81,7 @@ const Books = ({
             >
               Go to Review
             </a> */}
-            <Link to={{pathname: `/review/${infoLink}`}}>Go to Review</Link>
+            <Link to={`/review/${infoLink}`}>Go to Review</Link>
           </div>
         </div>
       </Modal>

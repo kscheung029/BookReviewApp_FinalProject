@@ -16,20 +16,20 @@ namespace BookReviewApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ReviewController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly string _userId;
+        //private readonly string _userId;
 
         public ReviewController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
 
-            var bearer = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(bearer.ToString().Replace("Bearer ", ""));
-            _userId = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            //var bearer = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            //var handler = new JwtSecurityTokenHandler();
+            //var token = handler.ReadJwtToken(bearer.ToString().Replace("Bearer ", ""));
+            //_userId = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
         }
 
         public class ReviewBook
@@ -39,8 +39,7 @@ namespace BookReviewApp.Controllers
         }
 
         // GET: api/Review
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public IEnumerable<UserBook> GetReview(string id)
         {
             List<UserBook> reviewBooks = _context.UserBooks.Where(book => book.Id == id && book.Review != null).Select(b => new UserBook()
@@ -57,8 +56,10 @@ namespace BookReviewApp.Controllers
 
         // PUT: api/Review
         [HttpPut]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public ReviewBook PutReview(ReviewBook reviewBook)
         {
+            var _userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var entity = _context.UserBooks.SingleOrDefault(item => item.Id == reviewBook.Id && item.UserId == _userId);
 
             if (entity == null)
@@ -92,6 +93,7 @@ namespace BookReviewApp.Controllers
 
         // DELETE: api/Review/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserBook>> DeleteReview(string id)
         {
             var userBook = _context.UserBooks.SingleOrDefault(b => b.Id == id);

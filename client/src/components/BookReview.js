@@ -26,8 +26,7 @@ class BookReview extends Component {
       method: "GET",  
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        Authorization : `Bearer ${this.state.token}`
+        'Content-Type': 'application/json'
       }
     })
       .then(res => res.json())
