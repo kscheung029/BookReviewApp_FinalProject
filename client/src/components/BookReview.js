@@ -9,6 +9,7 @@ class BookReview extends Component {
 
     this.state = {
       id: "" ,
+      bookTitle: "",
       reviews: [],
       loading: false,
       token: sessionStorage.getItem('auth_user')
@@ -17,7 +18,7 @@ class BookReview extends Component {
     this.addReview = this.addReview.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // loading
     this.setState({ loading: true });
     this.setState({ id: this.props.match.params.id })
@@ -39,7 +40,10 @@ class BookReview extends Component {
       .catch(err => {
         this.setState({ loading: false });
       });
-  }
+
+      const { volumeInfo: { title }} = await (await fetch(`https://www.googleapis.com/books/v1/volumes/${this.props.match.params.id}`)).json();
+      this.setState({ bookTitle: title });
+    }
 
   /**
    * Add new review
@@ -68,7 +72,7 @@ class BookReview extends Component {
 
         <div className="row">
           <div className="col-4  pt-3 border-right">
-            <h6>Say something about the Book!</h6>
+            <h6>Say something about {this.state.bookTitle}</h6>
             <ReviewForm id={this.state.id} addReview={this.addReview} />
           </div>
           <div className="col-8  pt-3 bg-white">

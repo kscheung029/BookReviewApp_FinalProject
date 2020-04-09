@@ -28,6 +28,7 @@ const Login = (props) => {
           sessionStorage.setItem("username", email);
           props.setAuth(sessionStorage.getItem("auth_user"));
           props.toggleLogin();
+          window.location.reload();
         }
         else {
           alert(json.errors);
