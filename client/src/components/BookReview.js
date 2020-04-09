@@ -8,21 +8,24 @@ class BookReview extends Component {
     super(props);
 
     this.state = {
-      id: "" ,
+      id: "",
+      title: "",
       reviews: [],
-      loading: false,
-      token: sessionStorage.getItem('auth_user')
+      loading: false
     };
 
     this.addReview = this.addReview.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // loading
-    this.setState({ loading: true });
-    this.setState({ id: this.props.match.params.id })
+    this.setState({
+      loading: true,
+      id: this.props.match.params.id,
+      title: this.props.location.state.title
+    });
     // get all the reviews
-    fetch("https://bookreviewapi.azurewebsites.net/api/review/" + this.props.match.params.id, {
+    await fetch("https://bookreviewapi.azurewebsites.net/api/review/" + this.props.match.params.id, {
       method: "GET",  
       headers: {
         'Accept': 'application/json',
@@ -57,10 +60,8 @@ class BookReview extends Component {
       <div className="App container bg-light shadow">
         <header className="App-header">
           <h1 className="App-title">
-            Review Page
-            <span className="px-2" role="img" aria-label="Chat">
-              💬
-            </span>
+            <span className="px-2" role="img" aria-label="Chat">💬</span>
+            {this.state.title}
           </h1>
           <p>
           </p>

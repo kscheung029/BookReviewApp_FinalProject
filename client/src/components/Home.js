@@ -54,12 +54,12 @@ const Home = () => {
   const [cards, setCards] = useState([]);
 
   // Handle Search
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
     if (maxResults > 40 || maxResults < 1) {
       toast.error('max results must be between 1 and 40');
     } else {
-      axios
+      await axios
         .get(
           `https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=${maxResults}&startIndex=${startIndex}`
         )
