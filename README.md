@@ -2,6 +2,8 @@
 
 This project will be build with React Front-End Development and ASP.NET Back-End Development.
 
+## Website-demo link: https://book-review.netlify.com/
+
 ## Youtube Video demonstration
 
 https://www.youtube.com/watch?v=Ncbso1fpInA&t=7s
