@@ -13,7 +13,7 @@ const Books = ({
   previewLink,
   infoLink
 }) => {
-  
+
   // States
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
@@ -81,7 +81,7 @@ const Books = ({
             >
               Go to Review
             </a> */}
-            <Link to={`/review/${infoLink}`}>Go to Review</Link>
+            <Link to={{ pathname: `/review/${infoLink}`, state: { title: title } }}>Go to Review</Link>
           </div>
         </div>
       </Modal>

@@ -6,7 +6,6 @@ export default class ReviewForm extends Component {
     this.state = {
       loading: false,
       error: "",
-      token: sessionStorage.getItem("auth_user"),
 
       review: {
         //name: "",
@@ -38,17 +37,17 @@ export default class ReviewForm extends Component {
   /**
    * Form submit handler
    */
-  onSubmit(e) {
+  async onSubmit(e) {
     e.preventDefault();
-    if (!sessionStorage.getItem("auth_user")){
-      alert("Please log in first.")
+    if (!sessionStorage.getItem("auth_user")) {
+      alert("Please log in first.");
       return;
     }
     // if (!this.isFormValid()) {
     //   this.setState({ error: "All fields are required." });
     //   return;
     // }
-    let input = e.target.message.value
+    let input = e.target.message.value;
 
     if (input === "") {
       this.setState({ error: "All fields are required." });
@@ -60,12 +59,12 @@ export default class ReviewForm extends Component {
 
     // persist the reviews on server
     let { review } = this.state;
-    fetch("https://BookReviewAPI.azurewebsites.net/api/review", {
+    await fetch("https://BookReviewAPI.azurewebsites.net/api/review", {
       method: "PUT",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.state.token}`
+        Authorization: `Bearer ${sessionStorage.getItem("auth_user")}`
       },
       body: JSON.stringify({"Id": this.props.id, "Review": input})
     })
