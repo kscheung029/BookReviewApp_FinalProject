@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Modal } from 'reactstrap';
 
 const BASE_URL = "https://BookReviewAPI.azurewebsites.net/api/";
 
@@ -9,11 +9,6 @@ const Register = (props) => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const rePassword = e.target.rePassword.value;
-
-    if (email === "" || password === "") {
-      alert("Username and password are required.");
-      return;
-    }
 
     if (password !== rePassword) {
       alert("Please confrim password.");
@@ -37,40 +32,58 @@ const Register = (props) => {
         "ConfirmPassword": rePassword
       })
     })
-      .then(response => {
-        if (response.status === 200) {
+      .then(response => response.json())
+      .then(json => {
+        if (json.status === 200) {
           alert("Sign up successfully!");
-          props.history.push("/login");
-        } else if (response.status === 204) {
-          alert("Username has been used.");
+          props.toggleLogin();
+          props.toggleRegister();
+        } else {
+          alert(json.errors);
         }
+      })
+      .catch(error => {
+        alert(error);
       });
+
   }
 
   return (
-    <div>
-      <h1 className="text-center mt-5">Book Review</h1>
-      <div className="d-flex justify-content-center mt-5">
-        <div className="border border-dark rounded bg-white">
-          <form onSubmit={signup}>
-            <h4 className="text-center">Register</h4>
-            <div className="form-group d-flex justify-content-center">
-              <input type="text" id="email" placeholder="E-mail" />
-            </div>
-            <div className="form-group d-flex justify-content-center">
-              <input type="password" id="password" placeholder="Password" />
-            </div>
-            <div className="form-group d-flex justify-content-center">
-              <input type="password" id="rePassword" placeholder="Re-type Password" />
-            </div>
-            <div className="form-group d-flex justify-content-center">
-              <button type="submit" className="btn btn-primary btn-sm">Sign up</button>
-            </div>
-          </form>
-          <p>Have an account already? Sign in <Link to="/login" className="text-decoration-none">here</Link>.</p>
-        </div>
+    <Modal isOpen={props.isOpen} toggle={props.toggleRegister}>
+      <div className='modal-header d-flex justify-content-center'>
+        <h5 className='modal-title text-center'>
+          Register
+        </h5>
+        <button
+          aria-label='Close'
+          className='close'
+          type='button'
+          onClick={props.toggleRegister}
+        >
+          <span aria-hidden={true}>X</span>
+        </button>
       </div>
-    </div>
+      <div className="modal-body d-flex justify-content-center">
+        <form onSubmit={signup}>
+          <div className="form-group">
+            <input type="email" id="email" placeholder="E-mail" required/>
+          </div>
+          <div className="form-group">
+            <input type="password" id="password" placeholder="Password" required/>
+          </div>
+          <div className="form-group">
+            <input type="password" id="rePassword" placeholder="Re-type Password" required/>
+          </div>
+          <div className="form-group d-flex justify-content-center">
+            <button type="submit" className="btn btn-primary">Register</button>
+          </div>
+        </form>
+      </div>
+      <div className="modal-footer d-flex justify-content-center">
+        Have an account already?
+        <button className="btn btn-primary btn-sm" onClick={() => { props.toggleRegister(); props.toggleLogin(); }}>Login</button>
+      </div>
+    </Modal>
   );
 }
 
